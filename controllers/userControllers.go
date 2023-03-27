@@ -1,12 +1,16 @@
 package controllers
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/iamtonmoy0/go-jwt-auth/database"
 	helper "github.com/iamtonmoy0/go-jwt-auth/helpers"
+	"github.com/iamtonmoy0/go-jwt-auth/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -30,5 +34,16 @@ func GetUser() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		//user struct from models
+		var user = models.User
+		err = userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+		defer cancel()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, user)
+
 	}
 }
