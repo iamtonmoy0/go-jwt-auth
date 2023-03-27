@@ -8,6 +8,13 @@ import (
 
 // checking user type
 func CheckUserType(c *gin.Context, role string) (err error) {
+	userType := c.GetString("user_type")
+	err = nil
+	if userType != role {
+		err = errors.New("Unauthorized to access this content")
+		return err
+	}
+	return err
 
 }
 
