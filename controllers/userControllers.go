@@ -23,7 +23,7 @@ func HashPass()
 func VerifyPass()
 
 func Signup() {
-	return func(c *gin.Context) {
+	return func(c *gin.context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var user models.User
 		if err := c.BindJSON(&user); err != nil {
